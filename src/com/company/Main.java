@@ -11,8 +11,9 @@ public class Main {
     /** Main class
      * */
     public static void main(String[] args) {
-        FirstThread firstThread = new FirstThread();
-        SecondThread secondThread = new SecondThread();
+        Logic logic = new Logic();
+        FirstThread firstThread = new FirstThread(logic);
+        SecondThread secondThread = new SecondThread(logic);
         firstThread.start();
         secondThread.start();
     }
@@ -24,13 +25,16 @@ public class Main {
 class FirstThread extends Thread {
     String text = "the first thread writes the time: ";
     File file = new File("F:\\Данила\\Учёба\\Enterprise\\LR1\\src\\com\\company\\currentdata.txt");
+    Logic logic;
 
+    public FirstThread(Logic logic){
+        this.logic = logic;
+    }
 
     public void run(){
         System.out.println("First thread has been started");
         while (!isInterrupted()) {
             try {
-                Logic logic = new Logic();
                 logic.logicFirstThread(file, text);
                 Thread.sleep(1000);
             } catch (InterruptedException | IOException e) {
@@ -47,6 +51,12 @@ class FirstThread extends Thread {
  * */
 class SecondThread extends Thread {
     File file = new File("F:\\Данила\\Учёба\\Enterprise\\LR1\\src\\com\\company\\currentdata.txt");
+    Logic logic;
+
+    public SecondThread(Logic logic){
+        this.logic = logic;
+    }
+
     public void run() {
         System.out.println("Second thread has been started");
         while (!isInterrupted()) {
@@ -84,6 +94,7 @@ class Logic{
             System.out.print(calendar.getTime());
             System.out.println();
             write.write(calendar.getTime().toString());
+            write.write("\n");
             write.flush();
             write.close();
             notify();
